@@ -31,6 +31,7 @@ type client struct {
 	db *sqlx.DB
 }
 
+// formatDSN has database connection variables
 func formatDSN() string {
 	cfg := mysql.NewConfig()
 	cfg.Net = "tcp"
@@ -52,6 +53,7 @@ func NewClient(conf db.Option) (db.DataStore, error) {
 	return &client{db: cli}, nil
 }
 
+// AddTask adds task to the database
 func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error) {
 	if task.ID != "" {
 		return "", errors.New("id is not empty")
@@ -70,6 +72,7 @@ func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error)
 	return task.ID, nil
 }
 
+// GetTask gets the task from database based on id
 func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 	var task models.Task
 	if err := c.db.Get(&task, fmt.Sprintf(`SELECT * FROM %s WHERE id = '%s'`, taskTableName, id)); err != nil {
@@ -82,6 +85,7 @@ func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 	return &task, nil
 }
 
+// UpdateTask updates the task in the database
 func (c *client) UpdateTask(ctx context.Context, task *models.Task) error {
 	names := task.Names()
 	if _, err := c.db.NamedExec(fmt.Sprintf(`UPDATE %s SET %s WHERE id=:id`, taskTableName, strings.Join(mkPlaceHolder(names[1:], "=:", func(name, prefix string) string {
@@ -93,9 +97,19 @@ func (c *client) UpdateTask(ctx context.Context, task *models.Task) error {
 	return nil
 }
 
+// DeleteTask deletes the task from database based on id
 func (c *client) DeleteTask(ctx context.Context, id string) error {
 	if _, err := c.db.Query(fmt.Sprintf(`DELETE FROM %s WHERE id= '%s'`, taskTableName, id)); err != nil {
 		return errors.Wrap(err, "failed to delete task")
+	}
+
+	return nil
+}
+
+// Disconnect - closes the db connections
+func (c *client) Disconnect(ctx context.Context) error {
+	if err := c.db.Close(); err != nil {
+		return errors.Wrap(err, "failed to disconnect mysql client")
 	}
 
 	return nil

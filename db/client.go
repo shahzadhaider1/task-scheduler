@@ -14,6 +14,8 @@ type DataStore interface {
 	GetTask(ctx context.Context, id string) (*models.Task, error)
 	DeleteTask(ctx context.Context, id string) error
 	UpdateTask(ctx context.Context, task *models.Task) error
+
+	Disconnect(ctx context.Context) error
 }
 
 // Option holds configuration for data store clients
