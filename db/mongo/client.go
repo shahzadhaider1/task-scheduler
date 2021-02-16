@@ -42,6 +42,7 @@ func NewClient(conf db.Option) (db.DataStore, error) {
 	return &client{conn: cli}, nil
 }
 
+// AddTask adds task to the database
 func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error) {
 	if task.ID != "" {
 		return "", errors.New("id is not empty")
@@ -55,6 +56,7 @@ func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error)
 	return task.ID, nil
 }
 
+// GetTask gets the task from database based on id
 func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 	var task *models.Task
 	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
@@ -67,6 +69,7 @@ func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 	return task, nil
 }
 
+// DeleteTask deletes the task from database based on id
 func (c *client) DeleteTask(ctx context.Context, id string) error {
 	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
 	if _, err := collection.DeleteOne(ctx, bson.M{"_id": id}); err != nil {
@@ -76,10 +79,20 @@ func (c *client) DeleteTask(ctx context.Context, id string) error {
 	return nil
 }
 
+// UpdateTask updates the task in the database
 func (c *client) UpdateTask(ctx context.Context, task *models.Task) error {
 	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
 	if _, err := collection.UpdateOne(ctx, bson.M{"_id": task.ID}, bson.M{"$set": task}); err != nil {
 		return errors.Wrap(err, "failed to update task")
+	}
+
+	return nil
+}
+
+// Disconnect - closes the db connections
+func (c *client) Disconnect(ctx context.Context) error {
+	if err := c.conn.Disconnect(ctx); err != nil {
+		return errors.Wrap(err, "failed to disconnect mongo client")
 	}
 
 	return nil
