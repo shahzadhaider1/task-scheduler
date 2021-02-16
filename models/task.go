@@ -1,11 +1,12 @@
 package models
 
 import (
-	"github.com/fatih/structs"
 	"time"
+
+	"github.com/fatih/structs"
 )
 
-// Student holds information for a student
+// Task holds information for a task
 type Task struct {
 	ID        string    `json:"id" structs:"id"  bson:"_id" db:"id"`
 	Name      string    `json:"name" structs:"name"  bson:"name" db:"name"`
@@ -15,13 +16,13 @@ type Task struct {
 }
 
 // Map converts structs to a map representation
-func (s *Task) Map() map[string]interface{} {
-	return structs.Map(s)
+func (t *Task) Map() map[string]interface{} {
+	return structs.Map(t)
 }
 
-// Names returns the field names of Student model
-func (s *Task) Names() []string {
-	fields := structs.Fields(s)
+// Names returns the field names of Task model
+func (t *Task) Names() []string {
+	fields := structs.Fields(t)
 	names := make([]string, len(fields))
 
 	for i, field := range fields {

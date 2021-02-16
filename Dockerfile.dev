@@ -1,0 +1,18 @@
+FROM golang:1.13
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gettext-base \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /taskscheduler/src/github.com/shahzadhaider1/taskscheduler
+
+ENV GO111MODULE=on
+
+RUN apt-get -y update && apt-get -y install jq curl
+
+RUN go get github.com/golangci/golangci-lint/cmd/golangci-lint \
+    && go get golang.org/x/tools/cmd/goimports
+
+RUN CGO_ENABLED=0
+
+ARG DEVELOPER
