@@ -7,7 +7,6 @@ import (
 	"github.com/shahzadhaider1/task-scheduler/models"
 )
 
-// We want to add the functionality of : add, update, get, remove, list
 // DataStore is an interface for query ops
 type DataStore interface {
 	AddTask(ctx context.Context, task *models.Task) (string, error)
@@ -32,11 +31,13 @@ var datastoreFactories = make(map[string]DataStoreFactory)
 func Register(name string, factory DataStoreFactory) {
 	if factory == nil {
 		log.Fatalf("Datastore factory %s does not exist.", name)
+
 		return
 	}
 	_, ok := datastoreFactories[name]
 	if ok {
 		log.Fatalf("Datastore factory %s already registered. Ignoring.", name)
+
 		return
 	}
 	datastoreFactories[name] = factory

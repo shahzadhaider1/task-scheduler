@@ -66,6 +66,7 @@ func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 		}
 		return nil, err
 	}
+
 	return task, nil
 }
 

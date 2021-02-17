@@ -52,6 +52,7 @@ func Test_client_AddTask(t *testing.T) {
 			_, err := client.AddTask(tt.args.ctx, tt.args.task)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AddTask() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 		})

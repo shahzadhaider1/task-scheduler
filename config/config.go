@@ -14,6 +14,8 @@ const (
 
 	ServerHost = "server.host"
 	ServerPort = "server.port"
+
+	LogLevel = "log.level"
 )
 
 func init() {
@@ -28,10 +30,12 @@ func init() {
 	_ = viper.BindEnv(ServerHost, "SERVER_HOST")
 	_ = viper.BindEnv(ServerPort, "SERVER_PORT")
 
+	_ = viper.BindEnv(LogLevel, "LOG_LEVEL")
+
 	// defaults
 	viper.SetDefault(DbName, "task_scheduler")
 	viper.SetDefault(DbHost, "localhost")
-	viper.SetDefault(DbPort, "3306")
+	viper.SetDefault(DbPort, "27017")
 
 	viper.SetDefault(ServerHost, "127.0.0.1")
 	viper.SetDefault(ServerPort, "8080")

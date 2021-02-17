@@ -26,7 +26,7 @@ func init() {
 	db.Register("mysql", NewClient)
 }
 
-//The first implementation.
+// client The first implementation.
 type client struct {
 	db *sqlx.DB
 }
@@ -65,7 +65,6 @@ func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error)
 		return prefix + name
 	}), ","))
 	if _, err := c.db.NamedExec(query, task); err != nil {
-		fmt.Println(query)
 		return "", errors.Wrap(err, "failed to add task")
 	}
 

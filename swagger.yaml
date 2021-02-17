@@ -1,0 +1,118 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Task-Scheduler-Service APIs"
+host: "localhost:8080"
+basePath: "/v1"
+schemes:
+  - "https"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+paths:
+  /internal/tasks:
+    post:
+      description: "create task"
+      operationId: "addTask"
+      tags:
+        - service
+      parameters:
+        - in: "body"
+          name: "task"
+          description: "task model"
+          required: true
+          schema:
+            $ref: "#/definitions/Task"
+      responses:
+        201:
+          description: "task added"
+          schema:
+            $ref: "#/definitions/Task"
+        400:
+          description: "bad request"
+        500:
+          description: "internal server error"
+    put:
+      description: "update task"
+      operationId: "updateTask"
+      tags:
+        - service
+      parameters:
+        - in: "body"
+          name: "task"
+          description: "task model"
+          required: true
+          schema:
+            $ref: "#/definitions/Task"
+      responses:
+        200:
+          description: "Task updated"
+          schema:
+            $ref: "#/definitions/Task"
+        400:
+          description: "bad request"
+        404:
+          description: "Task not found"
+        500:
+          description: "internal server error"
+  /internal/tasks/{ID}:
+    get:
+      description: "retrieve task based on id"
+      operationId: "getTaskByID"
+      tags:
+        - service
+      parameters:
+        - in: "path"
+          type: "string"
+          name: "ID"
+          required: true
+          description: "id of task"
+      responses:
+        200:
+          description: "task retrieved"
+          schema:
+            $ref: "#/definitions/Task"
+        404:
+          description: "task not found"
+        500:
+          description: "internal server error"
+    delete:
+      description: "delete task based on id"
+      operationId: "deleteTask"
+      tags:
+        - service
+      parameters:
+        - in: "path"
+          name: "ID"
+          type: "string"
+          description: "id of task"
+          required: true
+      responses:
+        200:
+          description: "task deleted"
+        400:
+          description: "bad request"
+        404:
+          description: "task not found"
+        500:
+          description: "internal server error"
+
+definitions:
+  Task:
+    type: "object"
+    required:
+      - name
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+      status:
+        type: "string"
+      data:
+        type: "string"
