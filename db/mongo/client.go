@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	stuCollection = "Task"
+	taskCollection = "Task"
 )
 
 func init() {
@@ -48,7 +48,7 @@ func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error)
 		return "", errors.New("id is not empty")
 	}
 	task.ID = uuid.NewV4().String()
-	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
+	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(taskCollection)
 	if _, err := collection.InsertOne(ctx, task); err != nil {
 		return "", errors.Wrap(err, "failed to add task")
 	}
@@ -59,7 +59,7 @@ func (c *client) AddTask(ctx context.Context, task *models.Task) (string, error)
 // GetTask gets the task from database based on id
 func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 	var task *models.Task
-	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
+	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(taskCollection)
 	if err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&task); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, domainErr.NewAPIError(domainErr.NotFound, fmt.Sprintf("task: %s not found", id))
@@ -72,7 +72,7 @@ func (c *client) GetTask(ctx context.Context, id string) (*models.Task, error) {
 
 // DeleteTask deletes the task from database based on id
 func (c *client) DeleteTask(ctx context.Context, id string) error {
-	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
+	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(taskCollection)
 	if _, err := collection.DeleteOne(ctx, bson.M{"_id": id}); err != nil {
 		return errors.Wrap(err, "failed to delete task")
 	}
@@ -82,7 +82,7 @@ func (c *client) DeleteTask(ctx context.Context, id string) error {
 
 // UpdateTask updates the task in the database
 func (c *client) UpdateTask(ctx context.Context, task *models.Task) error {
-	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(stuCollection)
+	collection := c.conn.Database(viper.GetString(config.DbName)).Collection(taskCollection)
 	if _, err := collection.UpdateOne(ctx, bson.M{"_id": task.ID}, bson.M{"$set": task}); err != nil {
 		return errors.Wrap(err, "failed to update task")
 	}
